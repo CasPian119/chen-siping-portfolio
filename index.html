@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="陈思坪的音乐、摄影与创作作品集。" />
+  <meta name="theme-color" content="#121110" />
+  <title>陈思坪 · Sing / Shoot / Create</title>
+  <style>
+    :root {
+      --ink: #121110;
+      --ink-soft: #1d1b19;
+      --paper: #f5efe7;
+      --paper-dim: #d9d0c5;
+      --orange: #ff5c35;
+      --yellow: #ffc64b;
+      --mint: #a8d8c8;
+      --line: rgba(245, 239, 231, .16);
+      --display: Georgia, 'Times New Roman', 'Noto Serif SC', serif;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--paper);
+      background: var(--ink);
+      font-family: var(--sans);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    ::selection { background: var(--orange); color: var(--ink); }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: .13;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 78px;
+      padding: 0 clamp(22px, 5vw, 76px);
+      border-bottom: 1px solid transparent;
+      transition: background .3s ease, border-color .3s ease, height .3s ease;
+    }
+    .topbar.is-scrolled {
+      height: 64px;
+      background: rgba(18, 17, 16, .82);
+      border-color: var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: -.03em;
+    }
+    .brand-mark {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      color: var(--ink);
+      background: var(--orange);
+      border-radius: 50%;
+      font-family: var(--display);
+      font-size: 14px;
+      transform: rotate(-10deg);
+    }
+    .brand small { color: var(--paper-dim); font-size: 11px; letter-spacing: .15em; }
+    .nav-links { display: flex; align-items: center; gap: clamp(16px, 2.6vw, 38px); }
+    .nav-links a { color: var(--paper-dim); font-size: 13px; transition: color .2s ease; }
+    .nav-links a:hover { color: var(--paper); }
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--paper);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(390px, .95fr);
+      gap: clamp(26px, 5vw, 90px);
+      align-items: center;
+      padding: 128px clamp(22px, 7vw, 120px) 56px;
+      isolation: isolate;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      z-index: -2;
+      top: 8%;
+      right: -11%;
+      width: min(58vw, 790px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 34%, #fe8863 0 5%, #ff5c35 23%, rgba(255,92,53,.17) 47%, transparent 68%);
+      filter: blur(2px);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 23%;
+      background: linear-gradient(0deg, #121110 3%, transparent);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 21px;
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; }
+    .hero-title {
+      max-width: 720px;
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(56px, 8.7vw, 142px);
+      font-weight: 500;
+      line-height: .84;
+      letter-spacing: -.09em;
+    }
+    .hero-title span {
+      display: block;
+      color: var(--orange);
+      font-family: var(--sans);
+      font-size: .32em;
+      font-weight: 750;
+      line-height: 1;
+      letter-spacing: -.06em;
+      margin: .48em 0 0 .15em;
+    }
+    .hero-title em { color: var(--yellow); font-style: italic; }
+    .hero-copy {
+      max-width: 480px;
+      margin: 28px 0 30px;
+      color: var(--paper-dim);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+    .hero-copy strong { color: var(--paper); font-weight: 600; }
+    .button-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0 21px;
+      border: 1px solid var(--orange);
+      color: var(--ink);
+      background: var(--orange);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, color .2s ease;
+    }
+    .button:hover { transform: translateY(-3px); background: var(--yellow); border-color: var(--yellow); }
+    .button.ghost { color: var(--paper); background: transparent; border-color: var(--line); }
+    .button.ghost:hover { color: var(--ink); background: var(--paper); border-color: var(--paper); }
+    .arrow { font-size: 19px; line-height: 0; transition: transform .2s ease; }
+    .button:hover .arrow { transform: translate(3px, -2px); }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 22px;
+      margin-top: 48px;
+      color: #9e958b;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .hero-meta span { display: inline-flex; align-items: center; gap: 8px; }
+    .hero-meta i { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
+
+    .hero-visual { position: relative; min-height: 530px; }
+    .orbital {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(38vw, 510px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(245,239,231,.37);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .orbital::before, .orbital::after {
+      content: '';
+      position: absolute;
+      border: inherit;
+      border-radius: 50%;
+    }
+    .orbital::before { inset: 10%; }
+    .orbital::after { inset: 22%; border-color: rgba(255,198,75,.75); }
+    .record {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(28vw, 375px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(-18deg);
+      background: repeating-radial-gradient(circle at center, #181716 0 2px, #262321 3px 4px, #11100f 5px 8px);
+      box-shadow: 16px 18px 0 rgba(0,0,0,.2), inset 0 0 80px #000;
+      animation: slowspin 22s linear infinite;
+    }
+    .record::before {
+      content: '';
+      position: absolute;
+      inset: 34%;
+      border-radius: 50%;
+      background: conic-gradient(from 210deg, var(--yellow), var(--orange), var(--yellow));
+      box-shadow: inset 0 0 0 20px rgba(18,17,16,.12);
+    }
+    .record::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      background: var(--paper);
+      transform: translate(-50%, -50%);
+    }
+    @keyframes slowspin { to { transform: translate(-50%, -50%) rotate(342deg); } }
+    .float-card {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border: 1px solid rgba(245,239,231,.25);
+      backdrop-filter: blur(9px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.24);
+    }
+    .live-card {
+      top: 13%; left: 0;
+      width: min(230px, 45%);
+      min-height: 174px;
+      padding: 18px;
+      color: var(--ink);
+      background: var(--paper);
+      transform: rotate(-7deg);
+    }
+    .card-kicker { font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+    .live-card b { max-width: 115px; font-family: var(--display); font-size: 31px; font-weight: 500; line-height: .95; letter-spacing: -.06em; }
+    .live-card .date { display: flex; justify-content: space-between; border-top: 1px solid rgba(18,17,16,.25); padding-top: 10px; font-size: 10px; font-weight: 700; }
+    .camera-card {
+      right: 0; bottom: 11%;
+      width: min(237px, 48%);
+      min-height: 184px;
+      padding: 17px;
+      background: rgba(18,17,16,.75);
+      transform: rotate(6deg);
+    }
+    .camera-card .card-kicker { color: var(--mint); }
+    .camera-icon {
+      position: relative;
+      width: 90px; height: 58px;
+      margin: 9px auto;
+      border: 2px solid var(--paper);
+      border-radius: 8px;
+    }
+    .camera-icon::before { content: ''; position: absolute; top: -11px; left: 11px; width: 28px; height: 10px; border: 2px solid var(--paper); border-bottom: 0; border-radius: 4px 4px 0 0; }
+    .camera-icon::after { content: ''; position: absolute; left: 50%; top: 50%; width: 31px; height: 31px; border: 2px solid var(--yellow); border-radius: 50%; transform: translate(-50%, -50%); }
+    .camera-card b { font-size: 15px; letter-spacing: .04em; }
+    .camera-card small { color: var(--paper-dim); font-size: 10px; }
+    .scribble { position: absolute; right: 11%; top: 8%; color: var(--yellow); font-family: var(--display); font-size: clamp(21px, 3.2vw, 39px); font-style: italic; transform: rotate(14deg); }
+    .scribble::after { content: ''; position: absolute; left: -9px; right: -12px; bottom: -6px; height: 8px; border-top: 2px solid currentColor; border-radius: 50%; transform: rotate(-3deg); }
+    .scroll-note { position: absolute; right: clamp(22px, 5vw, 76px); bottom: 33px; display: inline-flex; align-items: center; gap: 11px; color: var(--paper-dim); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; transform: rotate(90deg); transform-origin: right bottom; }
+    .scroll-note i { width: 42px; height: 1px; background: currentColor; }
+
+    .ticker { overflow: hidden; padding: 17px 0; color: var(--ink); background: var(--yellow); white-space: nowrap; }
+    .ticker-track { display: inline-flex; gap: 27px; align-items: center; min-width: max-content; animation: marquee 23s linear infinite; font-size: 15px; font-weight: 800; letter-spacing: -.025em; }
+    .ticker-track b { color: var(--orange); font-size: 20px; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    section { padding: 120px clamp(22px, 7vw, 120px); }
+    .section-marker { display: grid; grid-template-columns: 55px 1fr; gap: 16px; align-items: start; margin-bottom: 53px; }
+    .section-number { color: var(--orange); font-size: 12px; font-weight: 800; letter-spacing: .09em; padding-top: 8px; }
+    .section-head h2 { max-width: 850px; margin: 0; font-family: var(--display); font-size: clamp(42px, 6vw, 82px); font-weight: 500; line-height: .95; letter-spacing: -.07em; }
+    .section-head p { max-width: 560px; margin: 18px 0 0; color: #aaa096; font-size: 15px; line-height: 1.8; }
+    .accent { color: var(--orange); font-style: italic; }
+
+    .music { background: var(--paper); color: var(--ink); }
+    .music .section-number { color: var(--orange); }
+    .music .section-head p { color: #5a514a; }
+    .music-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(22px, 4vw, 60px); align-items: stretch; }
+    .style-map { position: relative; min-height: 430px; overflow: hidden; color: var(--paper); background: #22201e; }
+    .style-map::before { content: ''; position: absolute; width: 93%; aspect-ratio: 1; top: -26%; left: -17%; border-radius: 50%; background: radial-gradient(circle at 65% 60%, var(--orange) 0 3%, #c83e21 20%, transparent 57%); }
+    .style-map::after { content: ''; position: absolute; right: -19%; bottom: -35%; width: 70%; aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(245,239,231,.35); box-shadow: 0 0 0 30px rgba(245,239,231,.07), 0 0 0 65px rgba(245,239,231,.04); }
+    .vinyl-label { position: absolute; top: 30px; left: 30px; z-index: 1; display: flex; align-items: center; gap: 9px; color: var(--yellow); font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+    .vinyl-label i { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); animation: pulse 1.7s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: .28; transform: scale(.65); } }
+    .style-names { position: absolute; z-index: 1; bottom: 25px; left: 30px; right: 30px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .style-names span { padding: 8px 10px; border: 1px solid rgba(245,239,231,.35); background: rgba(18,17,16,.28); font-size: 12px; backdrop-filter: blur(4px); }
+    .music-list { display: grid; border-top: 1px solid rgba(18,17,16,.2); }
+    .music-item { display: grid; grid-template-columns: 45px 1fr auto; gap: 13px; align-items: center; min-height: 82px; border-bottom: 1px solid rgba(18,17,16,.2); }
+    .music-item .index { color: var(--orange); font-family: var(--display); font-size: 16px; }
+    .music-item h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
+    .music-item p { margin: 5px 0 0; color: #675e56; font-size: 12px; line-height: 1.4; }
+    .music-item svg { width: 24px; height: 24px; color: var(--orange); }
+
+    .photo { position: relative; }
+    .photo::before { content: 'Z30'; position: absolute; z-index: 0; top: -8px; right: 4vw; color: rgba(245,239,231,.035); font-family: var(--display); font-size: min(29vw, 390px); font-style: italic; line-height: .7; letter-spacing: -.12em; }
+    .photo > * { position: relative; z-index: 1; }
+    .photo-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(18px, 2.5vw, 32px); }
+    .photo-board { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .photo-card { position: relative; min-height: 245px; overflow: hidden; background: #292624; transition: transform .35s ease; }
+    .photo-card:hover { transform: translateY(-7px); }
+    .photo-card:nth-child(1) { grid-row: span 2; min-height: 512px; background: linear-gradient(145deg, #a3c9c7 0%, #465e63 46%, #1c2024 100%); }
+    .photo-card:nth-child(2) { background: linear-gradient(145deg, #db6c48, #53261f 72%); }
+    .photo-card:nth-child(3) { background: linear-gradient(145deg, #f5ca62, #a55c2c 48%, #252023 100%); }
+    .photo-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(18,17,16,.83)); }
+    .photo-card:nth-child(1)::after { content: ''; position: absolute; left: 21%; top: 12%; width: 62%; aspect-ratio: .71; border: 1px solid rgba(255,255,255,.56); box-shadow: inset 0 0 0 12px rgba(18,17,16,.11); transform: rotate(-7deg); }
+    .photo-card:nth-child(2)::after { content: 'LIVE'; position: absolute; top: 25px; left: 25px; font-family: var(--display); font-size: 45px; font-style: italic; color: rgba(245,239,231,.83); letter-spacing: -.08em; }
+    .photo-card:nth-child(3)::after { content: ''; position: absolute; width: 112px; height: 112px; top: 30px; right: 27px; border: 16px solid rgba(18,17,16,.6); border-radius: 50%; box-shadow: 0 0 0 2px rgba(245,239,231,.35); }
+    .photo-card figcaption { position: absolute; z-index: 2; right: 18px; bottom: 16px; left: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .photo-card h3 { margin: 0; font-size: 14px; font-weight: 700; }
+    .photo-card small { color: var(--paper-dim); font-size: 10px; letter-spacing: .08em; }
+    .kit-panel { display: flex; flex-direction: column; justify-content: space-between; min-height: 512px; padding: clamp(26px, 3vw, 44px); color: var(--ink); background: var(--mint); }
+    .kit-panel > span { font-size: 10px; font-weight: 800; letter-spacing: .15em; }
+    .kit-panel h3 { max-width: 410px; margin: 50px 0; font-family: var(--display); font-size: clamp(37px, 4vw, 58px); font-weight: 500; line-height: .92; letter-spacing: -.075em; }
+    .kit-list { display: grid; gap: 0; border-top: 1px solid rgba(18,17,16,.27); }
+    .kit-list div { display: flex; justify-content: space-between; gap: 15px; padding: 13px 0; border-bottom: 1px solid rgba(18,17,16,.27); font-size: 12px; }
+    .kit-list b { font-size: 11px; letter-spacing: .09em; }
+    .kit-note { margin-top: 14px; color: rgba(18,17,16,.65); font-size: 11px; line-height: 1.6; }
+
+    .create { color: var(--ink); background: var(--yellow); }
+    .create .section-head p { color: #574d25; }
+    .skill-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: clamp(22px, 4vw, 60px); }
+    .skill-copy { display: flex; flex-direction: column; justify-content: space-between; min-height: 393px; }
+    .skill-copy p { max-width: 410px; margin: 0; font-size: 17px; line-height: 1.8; }
+    .skill-copy p strong { color: var(--orange); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 35px; }
+    .skill-tags span { padding: 9px 12px; border: 1px solid rgba(18,17,16,.35); font-size: 12px; font-weight: 700; }
+    .terminal { padding: 0 24px 20px; color: #f5efe7; background: #1c1b19; box-shadow: 10px 10px 0 rgba(18,17,16,.14); }
+    .terminal-top { display: flex; align-items: center; gap: 7px; height: 54px; border-bottom: 1px solid rgba(245,239,231,.15); }
+    .terminal-top i { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+    .terminal-top i:nth-child(2) { background: var(--yellow); }
+    .terminal-top i:nth-child(3) { background: var(--mint); }
+    .terminal-top b { margin-left: 6px; color: var(--paper-dim); font-size: 11px; font-weight: 600; letter-spacing: .04em; }
+    .code { padding-top: 23px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: clamp(12px, 1.3vw, 14px); line-height: 1.95; white-space: pre-wrap; }
+    .code .comment { color: #8b8984; }
+    .code .key { color: var(--yellow); }
+    .code .class { color: var(--mint); }
+    .code .str { color: #ff8c71; }
+    .code .cursor { display: inline-block; width: 8px; height: 16px; vertical-align: -2px; background: var(--orange); animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .about { display: grid; grid-template-columns: minmax(0, .8fr) minmax(300px, 1.2fr); gap: clamp(35px, 8vw, 130px); align-items: center; }
+    .about-stamp { position: relative; display: grid; place-items: center; width: min(100%, 320px); aspect-ratio: 1; margin: auto; border: 1px solid var(--line); border-radius: 50%; }
+    .about-stamp::before { content: ''; width: 74%; height: 74%; border: 1px dashed rgba(245,239,231,.45); border-radius: 50%; }
+    .about-stamp::after { content: 'CSP'; position: absolute; color: var(--orange); font-family: var(--display); font-size: 67px; font-style: italic; letter-spacing: -.13em; transform: rotate(-10deg); }
+    .about-copy .eyebrow { margin-bottom: 16px; }
+    .about-copy h2 { margin: 0; font-family: var(--display); font-size: clamp(45px, 6.3vw, 82px); font-weight: 500; line-height: .94; letter-spacing: -.075em; }
+    .about-copy p { max-width: 620px; margin: 28px 0 0; color: var(--paper-dim); font-size: 16px; line-height: 1.9; }
+    .about-copy p + p { margin-top: 13px; }
+    .about-copy b { color: var(--paper); }
+
+    .contact { position: relative; overflow: hidden; padding-top: 102px; padding-bottom: 105px; color: var(--ink); background: var(--orange); }
+    .contact::before { content: '@'; position: absolute; right: -1%; bottom: -20%; color: rgba(245,239,231,.17); font-family: var(--display); font-size: min(75vw, 850px); line-height: 1; }
+    .contact > * { position: relative; z-index: 1; }
+    .contact-top { display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+    .contact h2 { max-width: 850px; margin: 0; font-family: var(--display); font-size: clamp(54px, 8vw, 112px); font-weight: 500; line-height: .83; letter-spacing: -.09em; }
+    .contact h2 em { font-style: italic; color: var(--paper); }
+    .contact-copy { max-width: 300px; margin: 0 0 4px; font-size: 14px; line-height: 1.75; }
+    .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 50px; }
+    .contact .button { border-color: var(--ink); }
+    .contact .button:hover { background: var(--paper); border-color: var(--paper); }
+    .contact .button.ghost { color: var(--ink); border-color: rgba(18,17,16,.5); }
+    .contact .button.ghost:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    footer { display: flex; justify-content: space-between; gap: 22px; padding: 22px clamp(22px, 7vw, 120px); color: #8c827a; font-size: 11px; }
+    footer span:last-child { text-align: right; }
+
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.show { opacity: 1; transform: none; }
+    .toast { position: fixed; z-index: 30; left: 50%; bottom: 23px; padding: 13px 17px; border: 1px solid rgba(245,239,231,.23); border-radius: 40px; color: var(--paper); background: rgba(18,17,16,.92); box-shadow: 0 10px 38px rgba(0,0,0,.25); font-size: 13px; transform: translate(-50%, 110px); transition: transform .32s ease; }
+    .toast.show { transform: translate(-50%, 0); }
+
+    @media (max-width: 800px) {
+      .topbar { height: 65px; }
+      .menu-toggle { display: inline-grid; place-items: center; }
+      .nav-links { position: absolute; top: 65px; left: 0; right: 0; display: grid; gap: 0; max-height: 0; overflow: hidden; border-bottom: 1px solid transparent; background: rgba(18,17,16,.97); transition: max-height .3s ease, border-color .3s ease; }
+      .nav-links.open { max-height: 240px; border-color: var(--line); }
+      .nav-links a { padding: 16px 24px; border-top: 1px solid var(--line); }
+      .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 118px; padding-bottom: 70px; }
+      .hero-visual { min-height: 420px; margin-top: -20px; }
+      .orbital { width: min(74vw, 450px); }
+      .record { width: min(56vw, 330px); }
+      .scroll-note { display: none; }
+      .music-grid, .photo-grid, .skill-grid, .about { grid-template-columns: 1fr; }
+      .kit-panel { min-height: 385px; }
+      .contact-top { display: block; }
+      .contact-copy { margin-top: 25px; }
+    }
+    @media (max-width: 500px) {
+      .brand small { display: none; }
+      section { padding-top: 84px; padding-bottom: 84px; }
+      .hero-title { font-size: clamp(52px, 17vw, 80px); }
+      .hero-copy { font-size: 14px; }
+      .hero-meta { margin-top: 33px; }
+      .hero-visual { min-height: 354px; }
+      .live-card { top: 7%; width: 48%; min-height: 145px; padding: 14px; }
+      .live-card b { font-size: 25px; }
+      .camera-card { width: 51%; min-height: 160px; padding: 13px; }
+      .camera-icon { transform: scale(.8); margin: 1px auto; }
+      .scribble { top: 1%; right: 5%; }
+      .section-marker { grid-template-columns: 35px 1fr; gap: 9px; margin-bottom: 34px; }
+      .style-map { min-height: 350px; }
+      .photo-board { gap: 8px; }
+      .photo-card { min-height: 155px; }
+      .photo-card:nth-child(1) { min-height: 322px; }
+      .terminal { padding: 0 14px 16px; }
+      .code { font-size: 11px; }
+      footer { display: block; line-height: 1.8; }
+      footer span:last-child { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#home" aria-label="回到首页">
+      <span class="brand-mark">CSP</span>
+      <span>陈思坪 <small>PORTFOLIO</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-label="打开导航" aria-expanded="false"><span>☰</span></button>
+    <nav class="nav-links" id="navLinks" aria-label="页面导航">
+      <a href="#music">音乐现场</a>
+      <a href="#photo">摄影记录</a>
+      <a href="#create">技能创作</a>
+      <a href="#contact">合作联系</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-content reveal">
+        <p class="eyebrow">SINGER · PHOTOGRAPHER · CREATOR</p>
+        <h1 class="hero-title">把声音<br />留在<em>现场</em><span>陈思坪 / CHEN SIPING</span></h1>
+        <p class="hero-copy">一位在音乐、镜头和屏幕之间切换的创作者。<strong>能唱、能拍、也能把想法做出来。</strong>从驻唱舞台的即兴互动，到跟拍现场的决定性瞬间，始终用真诚完成表达。</p>
+        <div class="button-row">
+          <a class="button" href="#music">看看我的故事 <span class="arrow">↗</span></a>
+          <a class="button ghost" href="#contact">发起合作</a>
+        </div>
+        <div class="hero-meta"><span><i></i> AVAILABLE FOR PROJECTS</span><span>BASED IN CHINA</span></div>
+      </div>
+      <div class="hero-visual reveal" aria-label="音乐与摄影创作主题视觉">
+        <div class="orbital"></div>
+        <div class="record"></div>
+        <div class="float-card live-card">
+          <span class="card-kicker">01 / LIVE MUSIC</span>
+          <b>驻唱<br />时刻</b>
+          <div class="date"><span>VOCAL</span><span>ON STAGE</span></div>
+        </div>
+        <div class="float-card camera-card">
+          <span class="card-kicker">02 / PHOTO</span>
+          <div class="camera-icon" aria-hidden="true"></div>
+          <b>NIKON Z30</b>
+          <small>NIKKOR · WIDE TO TELE</small>
+        </div>
+        <span class="scribble">make it real</span>
+      </div>
+      <span class="scroll-note"><i></i> scroll to explore</span>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>驻唱现场</span><b>✳</b><span>流行 · 民谣 · R&amp;B · 摇滚</span><b>✳</b><span>跟拍记录</span><b>✳</b><span>NIKON Z30</span><b>✳</b><span>JAVA / PS / PR</span><b>✳</b>
+        <span>驻唱现场</span><b>✳</b><span>流行 · 民谣 · R&amp;B · 摇滚</span><b>✳</b><span>跟拍记录</span><b>✳</b><span>NIKON Z30</span><b>✳</b><span>JAVA / PS / PR</span><b>✳</b>
+      </div>
+    </div>
+
+    <section class="music" id="music">
+      <div class="section-marker reveal">
+        <span class="section-number">01 / MUSIC</span>
+        <div class="section-head">
+          <h2>每一首歌，都有它该被听见的<strong class="accent">方式。</strong></h2>
+          <p>做过驻唱，也懂得一场现场最珍贵的是氛围与共鸣。根据空间、观众和时刻，调整声音的温度。</p>
+        </div>
+      </div>
+      <div class="music-grid reveal">
+        <div class="style-map">
+          <span class="vinyl-label"><i></i> NOW PLAYING / CSP LIVE</span>
+          <div class="style-names">
+            <span>流行 POP</span><span>民谣 FOLK</span><span>R&amp;B</span><span>摇滚 ROCK</span><span>抒情 BALLAD</span>
+          </div>
+        </div>
+        <div class="music-list">
+          <article class="music-item">
+            <span class="index">01</span><div><h3>驻唱现场</h3><p>适应不同场地节奏，和观众共同完成每一次演出。</p></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12.5a3.5 3.5 0 1 1-2-3.16V6.5l9-2v9a3.5 3.5 0 1 1-2-3.16V4.9"/></svg>
+          </article>
+          <article class="music-item">
+            <span class="index">02</span><div><h3>多风格曲库</h3><p>流行、民谣、R&amp;B、摇滚与抒情歌曲，灵活切换。</p></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 16V8m4 11V5m4 13v-12m4 15V3m4 13V8"/></svg>
+          </article>
+          <article class="music-item">
+            <span class="index">03</span><div><h3>情绪表达</h3><p>不只复刻旋律，更关注文字、呼吸和空间里的情绪流动。</p></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h2l2-5 4 10 2-5h4"/></svg>
+          </article>
+          <article class="music-item">
+            <span class="index">04</span><div><h3>合作场景</h3><p>适合音乐现场、品牌活动、派对演出与内容创作。</p></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="photo" id="photo">
+      <div class="section-marker reveal">
+        <span class="section-number">02 / PHOTO</span>
+        <div class="section-head">
+          <h2>把故事留在<strong class="accent">快门</strong>按下之前。</h2>
+          <p>用 NIKON Z30 和尼可尔长短焦段镜头，捕捉现场的呼吸、人物的神情，以及不需要摆拍的真实。</p>
+        </div>
+      </div>
+      <div class="photo-grid reveal">
+        <div class="photo-board" aria-label="摄影作品展示区，等待替换为实际拍摄作品">
+          <figure class="photo-card"><figcaption><div><h3>人物跟拍</h3><small>FOLLOW THE MOMENT</small></div><small>01</small></figcaption></figure>
+          <figure class="photo-card"><figcaption><div><h3>演出现场</h3><small>LIVE &amp; LIGHT</small></div><small>02</small></figcaption></figure>
+          <figure class="photo-card"><figcaption><div><h3>城市光影</h3><small>STREET STUDY</small></div><small>03</small></figcaption></figure>
+        </div>
+        <aside class="kit-panel">
+          <span>IN MY CAMERA BAG / 2026</span>
+          <h3>一机多镜，<br />从远近看见你。</h3>
+          <div>
+            <div class="kit-list">
+              <div><b>BODY</b><span>NIKON Z30</span></div>
+              <div><b>LENS</b><span>NIKKOR 短焦段镜头</span></div>
+              <div><b>LENS</b><span>NIKKOR 长焦段镜头</span></div>
+            </div>
+            <p class="kit-note">有跟拍经验，擅长在移动与自然的环境里寻找属于当下的画面。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="create" id="create">
+      <div class="section-marker reveal">
+        <span class="section-number">03 / CREATE</span>
+        <div class="section-head">
+          <h2>好奇心，也需要<strong class="accent">动手</strong>实现。</h2>
+          <p>在声音和画面之外，也持续学习用软件与代码表达。基础扎实，愿意把新工具变成好用的创作能力。</p>
+        </div>
+      </div>
+      <div class="skill-grid reveal">
+        <div class="skill-copy">
+          <p>从一段 <strong>Java</strong> 程序，到一支用 <strong>Premiere Pro</strong> 剪出的短片；从 <strong>Photoshop</strong> 的画面处理，到音乐现场的视觉想象——我享受把零散的想法逐步变成作品。</p>
+          <div class="skill-tags"><span>JAVA 基础编程</span><span>PHOTOSHOP</span><span>PREMIERE PRO</span><span>内容创作</span></div>
+        </div>
+        <div class="terminal" aria-label="Java 代码创作示意">
+          <div class="terminal-top"><i></i><i></i><i></i><b>ChenSiping.java</b></div>
+          <div class="code"><span class="comment">// keep learning. keep creating.</span>
+<span class="key">public class</span> <span class="class">ChenSiping</span> {
+  <span class="key">private final</span> String[] skills = {
+    <span class="str">"sing"</span>, <span class="str">"shoot"</span>, <span class="str">"create"</span>
+  };
+
+  <span class="key">public void</span> <span class="class">makeItReal</span>() {
+    System.out.println(<span class="str">"One idea at a time."</span>);
+  }
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about-stamp reveal" aria-label="陈思坪个人标记"></div>
+      <div class="about-copy reveal">
+        <p class="eyebrow">A LITTLE MORE ABOUT ME</p>
+        <h2>不止一个标签，<br />是正在发生的<strong class="accent">自己。</strong></h2>
+        <p>我是<strong>陈思坪</strong>。我相信好的表达不用被限定在一个领域：可以是舞台上的一首歌，也可以是镜头里的一帧光，或是深夜刚运行成功的一段代码。</p>
+        <p>如果你的项目需要一位愿意投入、乐于协作，并且对“做好一件事”有执念的创作者，我们可以聊聊。</p>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="contact-top reveal">
+        <h2>让下一次<br /><em>现场见。</em></h2>
+        <p class="contact-copy">演出邀约、摄影跟拍、内容创作或任何有趣的合作，都欢迎来聊。</p>
+      </div>
+      <div class="contact-actions reveal">
+        <button class="button" id="copyContact">复制合作邀约文案 <span class="arrow">↗</span></button>
+        <a class="button ghost" href="#home">回到首页 ↑</a>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <span>© <span id="year"></span> 陈思坪 · SING / SHOOT / CREATE</span>
+    <span>本页作品位已预留，可替换为真实演出与摄影素材。</span>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite">合作邀约文案已复制</div>
+
+  <script>
+    const topbar = document.getElementById('topbar');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    const toast = document.getElementById('toast');
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function updateTopbar() { topbar.classList.toggle('is-scrolled', window.scrollY > 18); }
+    updateTopbar();
+    window.addEventListener('scroll', updateTopbar, { passive: true });
+
+    menuToggle.addEventListener('click', () => {
+      const opened = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(opened));
+      menuToggle.querySelector('span').textContent = opened ? '×' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.querySelector('span').textContent = '☰';
+    }));
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('show'); });
+    }, { threshold: .13 });
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+
+    document.getElementById('copyContact').addEventListener('click', async () => {
+      const text = '你好，陈思坪！我想和你聊聊关于演出 / 摄影跟拍 / 内容创作的合作。';
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (_) {
+        const helper = document.createElement('textarea');
+        helper.value = text; document.body.appendChild(helper); helper.select(); document.execCommand('copy'); helper.remove();
+      }
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2600);
+    });
+  </script>
+</body>
+</html>
